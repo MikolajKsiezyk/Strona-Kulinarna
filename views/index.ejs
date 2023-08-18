@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/style.css">
+    <title>Strona główna</title>
+</head>
+<body>
+    <div class="header">
+        <h1 class="main-title">Nasze przepisy</h1>
+        <div class="auth-buttons">
+            <% if (!user) { %>
+                <a href="/register">Rejestracja</a>
+                <a href="/login">Logowanie</a>
+            <% } else { %>
+                <span>Zalogowany jako: <%= user.username %></span>
+                <a href="/logout">Wyloguj</a>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="filter-options centered">
+        <select id="category-filter">
+            <option value="none">--Rodzaj potrawy--</option> <!-- Dodane -->
+            <option value="Dessert">Deser</option>
+            <option value="Main Course">Danie Główne</option>
+            <option value="Appetizer">Przystawka</option>
+            <option value="Drink">Drink</option>
+            <option value="Other ">Inne</option>
+        </select>
+        
+        <select id="difficulty-filter">
+            <option value="none">--Poziom trudności--</option> <!-- Dodane -->
+            <option value="Easy">Łatwy</option>
+            <option value="Medium">Średni</option>
+            <option value="Hard">Ciężki</option>
+        </select>
+        <div>
+            <button id="filter-button">Filtruj</button>
+        </div>
+    </div>
+    
+    <div class="recipe-list">
+        <% recipes.forEach(recipe => { %>
+            <div class="recipe-card">
+                <a href="/recipe/<%= recipe._id %>">
+                    <h2><%= recipe.title %></h2>
+                    <h4><%= recipe.category %></h4>
+                    <h4><%= recipe.difficulty %></h4>
+                    <p><%= recipe.ingredients %></p>
+                </a>
+            </div>
+        <% }); %>
+    </div>
+    <div class="button">
+    <% if (user) { %>
+        <button><a href="/add-recipe" class="add-recipe-button">Dodaj przepis</button>
+    <% } %>
+    </div>
+    <script>
+        document.getElementById("filter-button").addEventListener("click", function() {
+            const category = document.getElementById("category-filter").value;
+            const difficulty = document.getElementById("difficulty-filter").value;
+        
+            let queryParams = [];
+            if(category !== "none") {
+                queryParams.push(`category=${category}`);
+            }
+        
+            if(difficulty !== "none") {
+                queryParams.push(`difficulty=${difficulty}`);
+            }
+        
+            window.location.href = `/?${queryParams.join("&")}`;
+        });
+     </script>
+</body>
+</html>
+
